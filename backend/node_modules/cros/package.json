@@ -1,0 +1,20 @@
+{
+  "name": "cros",
+  "version": "1.1.0",
+  "description": "A secure cross-network tunneling tool",
+  "main": "bin/cli.js",
+  "bin": {
+    "cros": "./bin/cli.js"
+  },
+  "scripts": {
+    "server": "node bin/cli.js server server/server.yml",
+    "client": "node bin/cli.js client client/client.yml"
+  },
+  "author": "huzhihui",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "js-yaml": "^4.1.0",
+    "ws": "^8.18.1"
+  }
+}
