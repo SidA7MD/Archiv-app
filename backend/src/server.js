@@ -8,29 +8,61 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-
-
+// CORS configuration - MUST be before other middleware
 const corsOptions = {
-  origin: [
-    "https://www.larchive.tech",
-    "https://larchive.tech",
-    "http://localhost:3000",
-    "http://localhost:5173" // Vite dev server
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "https://www.larchive.tech",
+      "https://larchive.tech",
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200 // For legacy browser support
 };
 
-
+// Apply CORS before routes
 app.use(cors(corsOptions));
 
+// Body parser middleware
+app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Server is running' });
+});
+
+// API routes
 app.use("/api/pdfs", pdfRoutes);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
-
-
+// Connect to DB and start server
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log('CORS enabled for:', corsOptions.origin);
+  });
+}).catch((err) => {
+  console.error('Failed to connect to database:', err);
+  process.exit(1);
 });
