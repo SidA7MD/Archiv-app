@@ -9,11 +9,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors({
-  origin: ["http://localhost:5173", "https://www.larchive.tech"], // allowed origins
+
+
+const corsOptions = {
+  origin: [
+    "https://www.larchive.tech",
+    "https://larchive.tech",
+    "http://localhost:3000",
+    "http://localhost:5173" // Vite dev server
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-}));
+};
+
+
+app.use(cors(corsOptions));
 
 app.use("/api/pdfs", pdfRoutes);
 
