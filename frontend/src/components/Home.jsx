@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import toast from 'react-hot-toast';
 import api from '../services/api';
-import Header from './Header';
 import Loading from './Loading';
 import ErrorMessage from './ErrorMessage';
 import SearchBar from './SearchBar';
@@ -21,7 +20,6 @@ const Home = () => {
     year: ""
   });
 
-  // Fetch PDFs
   const fetchPdfs = async () => {
     try {
       setLoading(true);
@@ -42,7 +40,6 @@ const Home = () => {
     fetchPdfs();
   }, []);
 
-  // Filter PDFs
   const filteredPdfs = pdfs.filter(pdf => {
     const matchesSearch = 
       pdf.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,19 +52,16 @@ const Home = () => {
     return matchesSearch && matchesSemester && matchesType && matchesYear;
   });
 
-  // Handle filter change
   const handleFilterChange = (filterName, value) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
   };
 
-  // Clear filters
   const clearFilters = () => {
     setFilters({ semester: "", type: "", year: "" });
     setSearchTerm("");
     toast.success("Filters cleared");
   };
 
-  // Download PDF
   const handleDownload = async (fileId, filename) => {
     const downloadToast = toast.loading('Downloading...');
     try {
@@ -87,29 +81,22 @@ const Home = () => {
     }
   };
 
-  // View PDF
   const handleView = (fileId) => {
     window.open(api.getViewUrl(fileId), '_blank');
     toast.success('Opening PDF in new tab');
   };
 
-  // Get unique years for filter
   const yearOptions = Array.from(
     new Set(pdfs.map(pdf => pdf.metadata?.year).filter(Boolean))
-  )
-    .sort()
-    .map(year => ({ value: year, label: year }));
+  ).sort().map(year => ({ value: year, label: year }));
 
-  // Check if filters are active
   const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
 
   if (loading) return <Loading />;
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container px-4 py-8 mx-auto max-w-7xl">
-       
-
+      <div className="container px-4 py-10 mx-auto max-w-7xl">
         {/* Controls */}
         <div className="p-6 mb-8 space-y-6 rounded-lg shadow-lg bg-base-100">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
@@ -121,7 +108,6 @@ const Home = () => {
           />
         </div>
 
-        {/* Results Info */}
         <ResultsInfo
           filteredCount={filteredPdfs.length}
           totalCount={pdfs.length}
@@ -129,30 +115,26 @@ const Home = () => {
           onClearFilters={clearFilters}
         />
 
-        {/* Error Message */}
         {error && <ErrorMessage message={error} onRetry={fetchPdfs} />}
 
-        {/* PDF Grid */}
         {!error && (
-          <>
-            {filteredPdfs.length === 0 ? (
-              <NoResults
-                onClearFilters={clearFilters}
-                hasFilters={hasActiveFilters}
-              />
-            ) : (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredPdfs.map((pdf) => (
-                  <PdfCard
-                    key={pdf._id}
-                    pdf={pdf}
-                    onView={handleView}
-                    onDownload={handleDownload}
-                  />
-                ))}
-              </div>
-            )}
-          </>
+          filteredPdfs.length === 0 ? (
+            <NoResults
+              onClearFilters={clearFilters}
+              hasFilters={hasActiveFilters}
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredPdfs.map((pdf) => (
+                <PdfCard
+                  key={pdf._id}
+                  pdf={pdf}
+                  onView={handleView}
+                  onDownload={handleDownload}
+                />
+              ))}
+            </div>
+          )
         )}
       </div>
     </div>

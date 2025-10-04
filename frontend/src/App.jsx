@@ -6,7 +6,6 @@ import AdminPage from './components/AdminPage';
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
 
-  // Check URL hash on mount and when it changes
   useEffect(() => {
     const checkHash = () => {
       const hash = window.location.hash;
@@ -17,26 +16,10 @@ function App() {
       }
     };
 
-    // Check on mount
     checkHash();
-
-    // Listen for hash changes
     window.addEventListener('hashchange', checkHash);
-
-    return () => {
-      window.removeEventListener('hashchange', checkHash);
-    };
+    return () => window.removeEventListener('hashchange', checkHash);
   }, []);
-
-  const navigateToHome = () => {
-    window.location.hash = '';
-    setCurrentPage('home');
-  };
-
-  const navigateToAdmin = () => {
-    window.location.hash = '#/admin';
-    setCurrentPage('admin');
-  };
 
   return (
     <>
@@ -45,33 +28,21 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: '#fef9c3',
+            color: '#422006',
           },
           success: {
-            duration: 3000,
-            iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
-            },
+            iconTheme: { primary: '#65a30d', secondary: '#fef9c3' },
           },
           error: {
-            duration: 4000,
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
+            iconTheme: { primary: '#dc2626', secondary: '#fef9c3' },
           },
           loading: {
-            iconTheme: {
-              primary: '#3b82f6',
-              secondary: '#fff',
-            },
+            iconTheme: { primary: '#65a30d', secondary: '#fef9c3' },
           },
         }}
       />
 
-      {/* Page Content - No Navigation Bar */}
       {currentPage === 'home' ? <Home /> : <AdminPage />}
     </>
   );

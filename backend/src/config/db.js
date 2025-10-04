@@ -1,20 +1,23 @@
 import mongoose from "mongoose";
+import { GridFSBucket } from "mongodb";
 
 let bucket;
 
 export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URL);
-    // No need for useNewUrlParser and useUnifiedTopology in newer versions
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
 
-    // Initialize GridFSBucket
-    bucket = new mongoose.mongo.GridFSBucket(conn.connection.db, {
-      bucketName: "pdfs"
+    // Initialize GridFS bucket with explicit name
+    bucket = new GridFSBucket(conn.connection.db, {
+      bucketName: "fs" // This MUST match what you used when uploading
     });
 
-    console.log("MongoDB connected with GridFSBucket");
-  } catch (err) {
-    console.error("DB Connection Error:", err.message);
+    console.log("GridFS bucket initialized");
+
+    return conn;
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
     process.exit(1);
   }
 };
