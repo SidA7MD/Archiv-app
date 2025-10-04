@@ -17,7 +17,7 @@ const Home = () => {
   const fetchPdfs = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/pdfs/files");
+      const res = await axios.get("https://archiv-app.onrender.com/api/pdfs/files");
       setPdfs(res.data);
       setError("");
     } catch (err) {
@@ -48,7 +48,7 @@ const Home = () => {
   const handleDownload = async (fileId, filename) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/pdfs/download/${fileId}`,
+        `https://archiv-app.onrender.com/api/pdfs/download/${fileId}`,
         { responseType: 'blob' }
       );
       
@@ -69,7 +69,7 @@ const Home = () => {
 
   // View PDF in new tab
   const handleView = (fileId) => {
-    window.open(`http://localhost:3000/api/pdfs/download/${fileId}`, '_blank');
+    window.open(`https://archiv-app.onrender.com/api/pdfs/download/${fileId}`, '_blank');
   };
 
   // Clear all filters

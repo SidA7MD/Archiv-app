@@ -42,7 +42,7 @@ const PdfUpload = () => {
       setMessage("Uploading...");
       
       const res = await axios.post(
-  "http://localhost:3000/api/pdfs/upload-simple", // Use the simpler endpoint
+  "https://archiv-app.onrender.com/api/pdfs/upload-simple", // Use the simpler endpoint
   formData,
   {
     headers: {
