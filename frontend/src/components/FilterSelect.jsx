@@ -36,7 +36,7 @@ const FilterSelect = ({
           ))}
         </select>
 
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <span className="absolute text-gray-400 -translate-y-1/2 pointer-events-none right-3 top-1/2">
           <ChevronDown size={18} />
         </span>
       </div>

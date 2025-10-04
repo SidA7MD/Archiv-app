@@ -107,11 +107,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container px-4 py-8 mx-auto max-w-7xl">
        
 
         {/* Controls */}
-        <div className="bg-base-100 rounded-lg shadow-lg p-6 mb-8 space-y-6">
+        <div className="p-6 mb-8 space-y-6 rounded-lg shadow-lg bg-base-100">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
           <FiltersSection
             filters={filters}
@@ -141,7 +141,7 @@ const Home = () => {
                 hasFilters={hasActiveFilters}
               />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredPdfs.map((pdf) => (
                   <PdfCard
                     key={pdf._id}

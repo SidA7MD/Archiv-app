@@ -13,112 +13,98 @@ const upload = multer({
 });
 
 // Upload PDF - Fixed version
-router.post("/upload", upload.single("pdf"), async (req, res) => {
+// Upload a PDF (keeps original filename)
+router.post("/upload", upload.single("file"), (req, res) => {
+  if (!bucket) {
+    return res.status(500).json({ message: "Database not connected" });
+  }
+
+  const { semester, type, subject, year } = req.body;
+
+  // Validate that a file exists
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  // Ensure it's a PDF
+  if (req.file.mimetype !== "application/pdf") {
+    return res.status(400).json({ message: "Only PDF files are allowed" });
+  }
+
+  // Save with exact original filename
+  const uploadStream = bucket.openUploadStream(req.file.originalname, {
+    metadata: { semester, type, subject, year },
+  });
+
+  uploadStream.end(req.file.buffer);
+
+  uploadStream.on("finish", () => {
+    res.status(201).json({
+      message: "PDF uploaded successfully",
+      fileId: uploadStream.id,
+      filename: req.file.originalname,
+    });
+  });
+
+  uploadStream.on("error", (err) => {
+    console.error("Upload error:", err);
+    res.status(500).json({ message: "Upload failed", error: err.message });
+  });
+});
+
+// Delete PDF by ID
+router.delete("/delete/:id", async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "PDF file required" });
-    }
-
-    const { semester, type, subject, year } = req.body;
-    if (!semester || !type || !subject || !year) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     if (!bucket) {
       return res.status(500).json({ message: "Database not connected" });
     }
 
-    // Create a promise to handle the upload
-    const uploadPromise = new Promise((resolve, reject) => {
-      const uploadStream = bucket.openUploadStream(req.file.originalname, {
-        contentType: "application/pdf",
-        metadata: { 
-          semester, 
-          type, 
-          subject, 
-          year, 
-          uploadedAt: new Date() 
-        },
-      });
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
 
-      // Store the file ID when the stream is created
-      const fileId = uploadStream.id;
+    await bucket.delete(fileId);
 
-      uploadStream.end(req.file.buffer);
-
-      uploadStream.on("finish", () => {
-        resolve(fileId);
-      });
-
-      uploadStream.on("error", (err) => {
-        reject(err);
-      });
-    });
-
-    // Wait for the upload to complete
-    const fileId = await uploadPromise;
-    
-    res.status(201).json({ 
-      message: "PDF uploaded successfully", 
-      fileId: fileId,
-      filename: req.file.originalname
-    });
-
+    res.json({ message: "File deleted successfully", fileId });
   } catch (err) {
-    console.error("Upload error:", err);
-    res.status(500).json({ message: "Upload failed", error: err.message });
+    console.error("Delete error:", err);
+
+    if (err.message.includes("FileNotFound")) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    res.status(500).json({ message: "Delete failed", error: err.message });
   }
 });
 
-// Alternative simpler approach
-router.post("/upload-simple", upload.single("pdf"), async (req, res) => {
+
+// Rename PDF by ID
+router.put("/rename/:id", async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "PDF file required" });
-    }
-
-    const { semester, type, subject, year } = req.body;
-    if (!semester || !type || !subject || !year) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     if (!bucket) {
       return res.status(500).json({ message: "Database not connected" });
     }
 
-    // Get the file ID before starting the upload
-    const fileId = new mongoose.Types.ObjectId();
-    
-    const uploadStream = bucket.openUploadStream(req.file.originalname, {
-      _id: fileId, // Set the ID explicitly
-      contentType: "application/pdf",
-      metadata: { 
-        semester, 
-        type, 
-        subject, 
-        year, 
-        uploadedAt: new Date() 
-      },
-    });
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+    const { newName } = req.body;
 
-    uploadStream.end(req.file.buffer);
+    if (!newName) {
+      return res.status(400).json({ message: "New filename is required" });
+    }
 
-    uploadStream.on("finish", () => {
-      res.status(201).json({ 
-        message: "PDF uploaded successfully", 
-        fileId: fileId,
-        filename: req.file.originalname
-      });
-    });
+    const result = await bucket.s.db
+      .collection("fs.files")
+      .updateOne(
+        { _id: fileId },
+        { $set: { filename: newName } }
+      );
 
-    uploadStream.on("error", (err) => {
-      console.error("GridFS upload error:", err);
-      res.status(500).json({ message: "Upload failed", error: err.message });
-    });
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
 
+    res.json({ message: "File renamed successfully", fileId, newName });
   } catch (err) {
-    console.error("Route error:", err);
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    console.error("Rename error:", err);
+    res.status(500).json({ message: "Rename failed", error: err.message });
   }
 });
 
