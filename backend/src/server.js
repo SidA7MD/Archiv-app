@@ -8,17 +8,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration - MUST be before other middleware
+// CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       "https://www.larchive.tech",
       "https://larchive.tech",
       "http://localhost:3000",
-      "http://localhost:5173"
+      "http://localhost:5173",
     ];
     
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) !== -1) {
@@ -27,13 +26,13 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 200 // For legacy browser support
+  optionsSuccessStatus: 200
 };
 
-// Apply CORS before routes
+// Apply CORS globally
 app.use(cors(corsOptions));
 
 // Body parser middleware
@@ -60,7 +59,7 @@ app.use((err, req, res, next) => {
 connectDB().then(() => {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
-    console.log('CORS enabled for:', corsOptions.origin);
+    console.log('CORS enabled for methods:', corsOptions.methods);
   });
 }).catch((err) => {
   console.error('Failed to connect to database:', err);
