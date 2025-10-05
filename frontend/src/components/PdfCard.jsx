@@ -189,7 +189,7 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
             {/* Semester Badge */}
             {pdf.metadata?.semester && (
               <div className="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border-2 border-green-200">
-                <span className="font-bold">S{pdf.metadata.semester}</span>
+                <span className="font-bold">{pdf.metadata.semester}</span>
               </div>
             )}
           </div>
