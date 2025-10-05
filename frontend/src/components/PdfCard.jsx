@@ -1,21 +1,8 @@
-import React from "react";
-import {
-  Download,
-  BookOpen,
-  FlaskConical,
-  PenTool,
-  FileText,
-  Trophy,
-  Rocket,
-  StickyNote,
-  Calendar,
-  Sparkles,
-  Star,
-} from "lucide-react";
+import { Download, BookOpen, FlaskConical, PenTool, FileText, Trophy, Rocket, StickyNote, Calendar, Sparkles, Star, Clipboard, RefreshCw, Code } from "lucide-react";
 
 // --- Type-Based Color Themes ---
 const typeThemes = {
-  Lecture: {
+  COURS: {
     Icon: BookOpen,
     gradient: "from-rose-400 via-pink-500 to-fuchsia-600",
     buttonBg: "bg-gradient-to-r from-pink-500 to-fuchsia-600",
@@ -26,7 +13,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-pink-500 to-fuchsia-500",
     subjectText: "text-white",
   },
-  Lab: {
+  LAB: {
     Icon: FlaskConical,
     gradient: "from-purple-500 via-violet-600 to-indigo-600",
     buttonBg: "bg-gradient-to-r from-violet-500 to-purple-600",
@@ -37,7 +24,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-violet-500 to-purple-500",
     subjectText: "text-white",
   },
-  Tutorial: {
+  TD: {
     Icon: PenTool,
     gradient: "from-blue-500 via-indigo-600 to-purple-600",
     buttonBg: "bg-gradient-to-r from-indigo-500 to-blue-600",
@@ -48,7 +35,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-indigo-500 to-blue-500",
     subjectText: "text-white",
   },
-  Assignment: {
+  DEVOIRS: {
     Icon: FileText,
     gradient: "from-emerald-400 via-teal-500 to-cyan-600",
     buttonBg: "bg-gradient-to-r from-teal-500 to-cyan-600",
@@ -59,7 +46,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-teal-500 to-cyan-500",
     subjectText: "text-white",
   },
-  Exam: {
+  EXAM: {
     Icon: Trophy,
     gradient: "from-amber-400 via-orange-500 to-red-500",
     buttonBg: "bg-gradient-to-r from-orange-500 to-red-500",
@@ -70,7 +57,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-orange-500 to-red-500",
     subjectText: "text-white",
   },
-  Project: {
+  PROJECT: {
     Icon: Rocket,
     gradient: "from-sky-400 via-blue-500 to-indigo-600",
     buttonBg: "bg-gradient-to-r from-blue-500 to-sky-600",
@@ -81,7 +68,7 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-blue-500 to-sky-500",
     subjectText: "text-white",
   },
-  Notes: {
+  NOTES: {
     Icon: StickyNote,
     gradient: "from-slate-400 via-gray-500 to-zinc-600",
     buttonBg: "bg-gradient-to-r from-gray-500 to-slate-600",
@@ -92,17 +79,39 @@ const typeThemes = {
     subjectBg: "bg-gradient-to-r from-gray-500 to-slate-500",
     subjectText: "text-white",
   },
-};
-
-// --- French to English Type Mapping ---
-const TYPE_MAPPINGS = {
-  "COURS": "Lecture",
-  "TD": "Tutorial",
-  "DEVOIRS": "Assignment",
-  "LAB": "Lab",
-  "EXAM": "Exam",
-  "PROJECT": "Project",
-  "NOTES": "Notes",
+  COMPOSITIONS: {
+    Icon: Clipboard,
+    gradient: "from-lime-400 via-green-500 to-emerald-600",
+    buttonBg: "bg-gradient-to-r from-lime-500 to-green-600",
+    buttonText: "text-white",
+    buttonHover: "hover:from-lime-600 hover:to-green-700 hover:shadow-lime-500/50",
+    badgeBg: "bg-lime-50 border-2 border-lime-300",
+    badgeText: "text-lime-800",
+    subjectBg: "bg-gradient-to-r from-lime-500 to-green-500",
+    subjectText: "text-white",
+  },
+  RATTRAPAGE: {
+    Icon: RefreshCw,
+    gradient: "from-yellow-400 via-amber-500 to-orange-500",
+    buttonBg: "bg-gradient-to-r from-yellow-500 to-amber-600",
+    buttonText: "text-white",
+    buttonHover: "hover:from-yellow-600 hover:to-amber-700 hover:shadow-yellow-500/50",
+    badgeBg: "bg-yellow-50 border-2 border-yellow-300",
+    badgeText: "text-yellow-800",
+    subjectBg: "bg-gradient-to-r from-yellow-500 to-amber-500",
+    subjectText: "text-white",
+  },
+  TP: {
+    Icon: Code,
+    gradient: "from-cyan-400 via-blue-500 to-indigo-500",
+    buttonBg: "bg-gradient-to-r from-cyan-500 to-blue-600",
+    buttonText: "text-white",
+    buttonHover: "hover:from-cyan-600 hover:to-blue-700 hover:shadow-cyan-500/50",
+    badgeBg: "bg-cyan-50 border-2 border-cyan-300",
+    badgeText: "text-cyan-800",
+    subjectBg: "bg-gradient-to-r from-cyan-500 to-blue-500",
+    subjectText: "text-white",
+  },
 };
 
 // --- PdfCard Component ---
@@ -116,9 +125,8 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
     });
   };
 
-  const rawType = (pdf.metadata?.type || "Notes").toUpperCase();
-  const typeKey = TYPE_MAPPINGS[rawType] || "Notes";
-  const typeTheme = typeThemes[typeKey] || typeThemes["Notes"];
+  const rawType = (pdf.metadata?.type || "NOTES").toUpperCase();
+  const typeTheme = typeThemes[rawType] || typeThemes["NOTES"];
   const TypeIcon = typeTheme.Icon;
 
   return (
@@ -136,14 +144,9 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
           />
 
           {/* Icon */}
-          <div className="relative z-10 flex justify-center mb-2">
-            <TypeIcon className="w-10 h-10 text-white/90 drop-shadow-md" />
+          <div className="relative z-10 flex justify-center">
+            <TypeIcon className="w-16 h-16 text-white/90 drop-shadow-md" />
           </div>
-
-          {/* Type */}
-          <p className="relative z-10 text-lg font-black tracking-tight text-center uppercase text-white/90 drop-shadow-lg">
-            {rawType}
-          </p>
 
           {/* Curved bottom */}
           <div
@@ -226,4 +229,4 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
   );
 };
 
-export default PdfCard;
+export default PdfCard

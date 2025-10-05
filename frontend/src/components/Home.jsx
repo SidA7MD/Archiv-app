@@ -25,8 +25,19 @@ const Home = () => {
       setLoading(true);
       setError("");
       const data = await api.fetchPdfs();
-      setPdfs(data);
-      toast.success(`Loaded ${data.length} PDFs successfully!`);
+      
+      // Filter to keep only one item per type
+      const uniqueTypes = new Map();
+      data.forEach(pdf => {
+        const type = pdf.metadata?.type;
+        if (type && !uniqueTypes.has(type)) {
+          uniqueTypes.set(type, pdf);
+        }
+      });
+      
+      const filteredData = Array.from(uniqueTypes.values());
+      setPdfs(filteredData);
+      toast.success(`Loaded ${filteredData.length} PDFs (one per type)!`);
     } catch (err) {
       console.error("Error fetching PDFs:", err);
       setError("Failed to load PDFs. Please check your connection.");
