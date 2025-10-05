@@ -8,36 +8,30 @@ const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,
   limits: {
-    fileSize: 16 * 1024 * 1024 // 16MB limit
+    fileSize: 16 * 1024 * 1024 
   }
 });
 
-// Upload PDF - Fixed version
-// Upload a PDF (keeps original filename)
+
 router.post("/upload", upload.single("file"), (req, res) => {
   if (!bucket) {
     return res.status(500).json({ message: "Database not connected" });
   }
-
   const { semester, type, subject, year } = req.body;
 
-  // Validate that a file exists
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  // Ensure it's a PDF
   if (req.file.mimetype !== "application/pdf") {
     return res.status(400).json({ message: "Only PDF files are allowed" });
   }
 
-  // Save with exact original filename
   const uploadStream = bucket.openUploadStream(req.file.originalname, {
     metadata: { semester, type, subject, year },
   });
 
   uploadStream.end(req.file.buffer);
-
   uploadStream.on("finish", () => {
     res.status(201).json({
       message: "PDF uploaded successfully",
@@ -52,15 +46,13 @@ router.post("/upload", upload.single("file"), (req, res) => {
   });
 });
 
-// Delete PDF by ID
+
 router.delete("/delete/:id", async (req, res) => {
   try {
     if (!bucket) {
       return res.status(500).json({ message: "Database not connected" });
     }
-
     const fileId = new mongoose.Types.ObjectId(req.params.id);
-
     await bucket.delete(fileId);
 
     res.json({ message: "File deleted successfully", fileId });
@@ -70,26 +62,22 @@ router.delete("/delete/:id", async (req, res) => {
     if (err.message.includes("FileNotFound")) {
       return res.status(404).json({ message: "File not found" });
     }
-
     res.status(500).json({ message: "Delete failed", error: err.message });
   }
 });
 
 
-// Rename PDF by ID
 router.put("/rename/:id", async (req, res) => {
   try {
     if (!bucket) {
       return res.status(500).json({ message: "Database not connected" });
     }
-
     const fileId = new mongoose.Types.ObjectId(req.params.id);
     const { newName } = req.body;
 
     if (!newName) {
       return res.status(400).json({ message: "New filename is required" });
     }
-
     const result = await bucket.s.db
       .collection("fs.files")
       .updateOne(
@@ -100,7 +88,6 @@ router.put("/rename/:id", async (req, res) => {
     if (result.matchedCount === 0) {
       return res.status(404).json({ message: "File not found" });
     }
-
     res.json({ message: "File renamed successfully", fileId, newName });
   } catch (err) {
     console.error("Rename error:", err);
@@ -108,7 +95,6 @@ router.put("/rename/:id", async (req, res) => {
   }
 });
 
-// Download PDF by ID
 router.get("/download/:id", async (req, res) => {
   try {
     if (!bucket) {
@@ -140,7 +126,7 @@ router.get("/download/:id", async (req, res) => {
   }
 });
 
-// Get all PDFs
+
 router.get("/files", async (req, res) => {
   try {
     if (!bucket) {

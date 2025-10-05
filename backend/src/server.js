@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration
+
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
@@ -32,21 +32,20 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-// Apply CORS globally
-app.use(cors(corsOptions));
 
-// Body parser middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Health check endpoint
+
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// API routes
+
 app.use("/api/pdfs", pdfRoutes);
 
-// Error handling middleware
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -55,7 +54,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to DB and start server
+
 connectDB().then(() => {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);

@@ -131,10 +131,10 @@ const PdfUpload = () => {
           </button>
         </div>
 
-        {/* Upload Form Card */}
+        
         <div className="p-8 border border-gray-200 shadow-lg bg-white/80 backdrop-blur-md rounded-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* File Upload */}
+            
             <div>
               <label className="block mb-2 font-semibold text-gray-700">
                 Fichier PDF *
@@ -174,7 +174,7 @@ const PdfUpload = () => {
               </div>
             </div>
 
-            {/* Fields */}
+            
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="block mb-1 font-medium text-gray-700">
@@ -249,7 +249,7 @@ const PdfUpload = () => {
               </div>
             </div>
 
-            {/* Buttons */}
+            
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
@@ -274,7 +274,7 @@ const PdfUpload = () => {
           </form>
         </div>
 
-        {/* Instructions */}
+        
         <div className="p-6 mt-6 bg-white border border-gray-200 shadow-md rounded-xl">
           <h3 className="mb-3 text-lg font-bold text-gray-800">
             Instructions

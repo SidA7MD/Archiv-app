@@ -11,7 +11,7 @@ import PdfCard from './PdfCard';
 
 const Home = () => {
   const [pdfs, setPdfs] = useState([]);
-  const [displayedPdfs, setDisplayedPdfs] = useState([]); // PDFs currently shown
+  const [displayedPdfs, setDisplayedPdfs] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,11 +21,11 @@ const Home = () => {
     year: ""
   });
 
-  // Get 6 random PDFs with different types
+  
   const getRandomSixPdfs = (allPdfs) => {
     const typeGroups = {};
     
-    // Group PDFs by type
+    
     allPdfs.forEach(pdf => {
       const type = pdf.metadata?.type;
       if (type) {
@@ -36,11 +36,11 @@ const Home = () => {
       }
     });
 
-    // Get one random PDF from each type (max 6 types)
+    
     const types = Object.keys(typeGroups);
     const randomPdfs = [];
     
-    // Shuffle types to get random order
+    
     const shuffledTypes = types.sort(() => Math.random() - 0.5).slice(0, 6);
     
     shuffledTypes.forEach(type => {
@@ -52,7 +52,7 @@ const Home = () => {
     return randomPdfs;
   };
 
-  // Fetch all PDFs from backend
+  
   const fetchAllPdfs = async () => {
     try {
       setLoading(true);
@@ -60,7 +60,7 @@ const Home = () => {
       const data = await api.fetchPdfs();
       setPdfs(data);
       
-      // Show 6 random PDFs initially
+     
       const randomSix = getRandomSixPdfs(data);
       setDisplayedPdfs(randomSix);
       toast.success(`Loaded ${randomSix.length} featured PDFs!`);
@@ -77,13 +77,13 @@ const Home = () => {
     fetchAllPdfs();
   }, []);
 
-  // Check if user is searching or filtering
+  
   const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
 
-  // Update displayed PDFs based on filters
+  
   useEffect(() => {
     if (hasActiveFilters) {
-      // Apply filters to all PDFs
+      
       const filtered = pdfs.filter(pdf => {
         const matchesSearch = 
           pdf.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,7 +97,7 @@ const Home = () => {
       });
       setDisplayedPdfs(filtered);
     } else {
-      // No filters: show 6 random PDFs
+      
       const randomSix = getRandomSixPdfs(pdfs);
       setDisplayedPdfs(randomSix);
     }
@@ -148,7 +148,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container px-4 py-10 mx-auto max-w-full w-[95%]">
-        {/* Controls */}
+        
         <div className="p-6 mb-8 space-y-6 bg-white rounded-lg shadow-lg">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
           <FiltersSection

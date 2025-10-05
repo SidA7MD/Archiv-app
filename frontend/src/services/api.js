@@ -3,8 +3,8 @@ const API_BASE_URL = "https://archiv-app.onrender.com/api/pdfs";
 
 const api = {
   /**
-   * Fetch all PDFs from the server
-   * @returns {Promise<Array>} Array of PDF objects
+   * 
+   * @returns {Promise<Array>} 
    */
   async fetchPdfs() {
     try {
@@ -20,9 +20,9 @@ const api = {
   },
 
   /**
-   * Download a PDF file
-   * @param {string} fileId - The ID of the file to download
-   * @returns {Promise<Blob>} The PDF file as a Blob
+   * 
+   * @param {string} fileId 
+   * @returns {Promise<Blob>} 
    */
   async downloadPdf(fileId) {
     try {
@@ -38,9 +38,9 @@ const api = {
   },
 
   /**
-   * Get the URL for viewing a PDF
-   * @param {string} fileId - The ID of the file
-   * @returns {string} The URL to view the PDF
+   *
+   * @param {string} fileId 
+   * @returns {string} 
    */
   getViewUrl(fileId) {
     return `${API_BASE_URL}/download/${fileId}`;

@@ -1,6 +1,6 @@
 import { Download, BookOpen, FlaskConical, PenTool, FileText, Trophy, Rocket, StickyNote, Calendar, Sparkles, Star, Clipboard, RefreshCw, Code } from "lucide-react";
 
-// --- Type-Based Color Themes ---
+
 const typeThemes = {
   COURS: {
     Icon: BookOpen,
@@ -114,7 +114,7 @@ const typeThemes = {
   },
 };
 
-// --- PdfCard Component ---
+
 const PdfCard = ({ pdf, onView, onDownload }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -133,7 +133,7 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
     <div className="w-full max-w-sm mx-auto">
       <div className="flex flex-col h-[420px] bg-white rounded-2xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.03] hover:-rotate-1">
         
-        {/* Header Gradient */}
+        
         <div
           className={`relative bg-gradient-to-br ${typeTheme.gradient} pt-7 pb-14 px-4 overflow-visible rounded-t-2xl`}
         >
@@ -143,12 +143,12 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
             style={{ animationDelay: "1s" }}
           />
 
-          {/* Icon */}
+          
           <div className="relative z-10 flex justify-center">
             <TypeIcon className="w-16 h-16 text-white/90 drop-shadow-md" />
           </div>
 
-          {/* Curved bottom */}
+          
           <div
             className="absolute left-0 right-0 z-0 h-12 bg-white -bottom-1"
             style={{
@@ -158,22 +158,22 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
           ></div>
         </div>
 
-        {/* Body Section */}
+        
         <div className="flex flex-col flex-grow px-4 pt-1 pb-4 -mt-2 bg-white rounded-b-2xl">
           
-          {/* Title */}
+          
           <h3 className="text-gray-900 font-bold text-lg text-center mb-2 line-clamp-2 min-h-[3rem] flex items-center justify-center">
             {pdf.filename?.replace(".pdf", "") || "Titre du Document"}
           </h3>
 
-          {/* Subject Badge */}
+          
           {pdf.metadata?.subject && (
             <div className={`px-4 py-1.5 mx-auto mb-3 text-sm font-bold ${typeTheme.subjectBg} ${typeTheme.subjectText} rounded-full shadow-md`}>
               {pdf.metadata.subject}
             </div>
           )}
 
-          {/* Metadata Badges */}
+          
           <div className="flex flex-wrap justify-center gap-2 mb-2">
             <div
               className={`${typeTheme.badgeBg} ${typeTheme.badgeText} text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 transition-colors shadow-sm`}
@@ -189,7 +189,7 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
               </div>
             )}
             
-            {/* Semester Badge */}
+           
             {pdf.metadata?.semester && (
               <div className="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm border-2 border-green-200">
                 <span className="font-bold">{pdf.metadata.semester}</span>
@@ -197,12 +197,12 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
             )}
           </div>
 
-          {/* Upload Date */}
+          
           <div className="mb-3 text-xs text-center text-gray-500">
             Mis en ligne le {formatDate(pdf.createdAt || pdf.uploadDate)}
           </div>
 
-          {/* Buttons */}
+          
           <div className="mt-auto">
             <button
               onClick={() => onView(pdf._id)}

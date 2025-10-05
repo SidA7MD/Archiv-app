@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const pdfMetadataSchema = new mongoose.Schema({
-  fileId: {              // GridFS ObjectId
+  fileId: {              
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     unique: true,
-    ref: "fs.files"      // reference to GridFS collection
+    ref: "fs.files"      
   },
   semester: {
     type: String,

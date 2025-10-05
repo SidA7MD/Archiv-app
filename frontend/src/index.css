@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar styles */
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -21,14 +21,13 @@
   background-color: hsl(var(--bc) / 0.3);
 }
 
-/* Smooth transitions */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Custom animations */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -44,7 +43,7 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Focus styles */
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {

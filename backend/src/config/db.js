@@ -5,9 +5,7 @@ let bucket;
 export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URL);
-    // No need for useNewUrlParser and useUnifiedTopology in newer versions
 
-    // Initialize GridFSBucket
     bucket = new mongoose.mongo.GridFSBucket(conn.connection.db, {
       bucketName: "pdfs"
     });

@@ -1,6 +1,5 @@
 import multer from "multer";
 
-const storage = multer.memoryStorage(); // keep file in memory for GridFS
-const upload = multer({ storage });
+const storage = multer.memoryStorage(); 
 
 export default upload;

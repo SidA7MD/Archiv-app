@@ -26,7 +26,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-gray-100 to-white">
       <div className="w-full max-w-md p-8 bg-white border border-gray-200 shadow-lg rounded-2xl">
-        {/* En-tête */}
+       
         <div className="mb-6 text-center">
           <h2 className="mb-2 text-3xl font-bold text-gray-800">
             Accès Administrateur
@@ -36,7 +36,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
           </p>
         </div>
 
-        {/* Formulaire */}
+       
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="form-control">
             <label className="block mb-1 font-medium text-gray-700">
@@ -66,7 +66,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* Message info */}
+        
         <div className="p-3 mt-6 text-sm text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
           L’accès administrateur est requis pour téléverser des documents.
         </div>
