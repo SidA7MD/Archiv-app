@@ -5,20 +5,18 @@ const AdminLogin = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Hard-coded admin password (you can change this)
   const ADMIN_PASSWORD = 'admin123';
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate a brief delay for better UX
     setTimeout(() => {
       if (password === ADMIN_PASSWORD) {
-        toast.success('Login successful!');
+        toast.success('Connexion réussie !');
         onLoginSuccess();
       } else {
-        toast.error('Invalid password!');
+        toast.error('Mot de passe incorrect !');
         setPassword('');
       }
       setLoading(false);
@@ -26,53 +24,51 @@ const AdminLogin = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="text-5xl mb-3">🔐</div>
-            <h2 className="card-title text-3xl justify-center mb-2">
-              Admin Access
-            </h2>
-            <p className="text-base-content/70">
-              Enter password to upload PDFs
-            </p>
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-gray-100 to-white">
+      <div className="w-full max-w-md p-8 bg-white border border-gray-200 shadow-lg rounded-2xl">
+        {/* En-tête */}
+        <div className="mb-6 text-center">
+          <h2 className="mb-2 text-3xl font-bold text-gray-800">
+            Accès Administrateur
+          </h2>
+          <p className="text-gray-600">
+            Veuillez entrer le mot de passe pour continuer
+          </p>
+        </div>
+
+        {/* Formulaire */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="form-control">
+            <label className="block mb-1 font-medium text-gray-700">
+              Mot de passe
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              required
+              autoFocus
+            />
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-semibold">Password</span>
-              </label>
-              <input
-                type="password"
-                placeholder="Enter admin password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input input-bordered input-primary w-full"
-                required
-                autoFocus
-              />
-            </div>
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className={`w-full py-3 rounded-lg font-semibold text-lg transition-all duration-300 ${
+              loading
+                ? 'bg-blue-300 text-white cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
+            }`}
+          >
+            {loading ? 'Vérification...' : 'Se connecter'}
+          </button>
+        </form>
 
-            <button
-              type="submit"
-              disabled={loading || !password}
-              className={`btn btn-primary w-full ${loading ? 'loading' : ''}`}
-            >
-              {loading ? 'Verifying...' : 'Login'}
-            </button>
-          </form>
-
-          {/* Info Alert */}
-          <div className="alert alert-info mt-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span className="text-sm">Admin access required to upload documents</span>
-          </div>
+        {/* Message info */}
+        <div className="p-3 mt-6 text-sm text-center text-gray-500 border border-gray-200 rounded-lg bg-gray-50">
+          L’accès administrateur est requis pour téléverser des documents.
         </div>
       </div>
     </div>

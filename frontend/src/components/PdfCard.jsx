@@ -127,27 +127,27 @@ const PdfCard = ({ pdf, onView, onDownload }) => {
         
         {/* Header Gradient */}
         <div
-          className={`relative bg-gradient-to-br ${typeTheme.gradient} pt-7 pb-14 px-4 overflow-hidden rounded-t-2xl`}
+          className={`relative bg-gradient-to-br ${typeTheme.gradient} pt-7 pb-14 px-4 overflow-visible rounded-t-2xl`}
         >
-          <Sparkles className="absolute w-5 h-5 top-4 right-6 text-white/40 animate-pulse" />
+          <Sparkles className="absolute z-20 w-5 h-5 top-4 right-6 text-white/40 animate-pulse" />
           <Star
-            className="absolute w-4 h-4 top-8 left-6 text-white/30 animate-pulse"
+            className="absolute z-20 w-4 h-4 top-8 left-6 text-white/30 animate-pulse"
             style={{ animationDelay: "1s" }}
           />
 
           {/* Icon */}
-          <div className="flex justify-center mb-2">
+          <div className="relative z-10 flex justify-center mb-2">
             <TypeIcon className="w-10 h-10 text-white/90 drop-shadow-md" />
           </div>
 
           {/* Type */}
-          <p className="text-lg font-black tracking-tight text-center uppercase text-white/90 drop-shadow-lg">
+          <p className="relative z-10 text-lg font-black tracking-tight text-center uppercase text-white/90 drop-shadow-lg">
             {rawType}
           </p>
 
           {/* Curved bottom */}
           <div
-            className="absolute left-0 right-0 h-12 bg-white -bottom-1"
+            className="absolute left-0 right-0 z-0 h-12 bg-white -bottom-1"
             style={{
               borderTopLeftRadius: "50% 100%",
               borderTopRightRadius: "50% 100%",
