@@ -11,7 +11,7 @@ import PdfCard from './PdfCard';
 
 const Home = () => {
   const [pdfs, setPdfs] = useState([]);
-  const [allPdfs, setAllPdfs] = useState([]); // Store all PDFs
+  const [displayedPdfs, setDisplayedPdfs] = useState([]); // PDFs currently shown
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,28 +20,50 @@ const Home = () => {
     type: "",
     year: ""
   });
-  const [hasLoadedAll, setHasLoadedAll] = useState(false); // Track if all PDFs are loaded
 
-  // Fetch initial 6 PDFs (one per type)
-  const fetchInitialPdfs = async () => {
+  // Get 6 random PDFs with different types
+  const getRandomSixPdfs = (allPdfs) => {
+    const typeGroups = {};
+    
+    // Group PDFs by type
+    allPdfs.forEach(pdf => {
+      const type = pdf.metadata?.type;
+      if (type) {
+        if (!typeGroups[type]) {
+          typeGroups[type] = [];
+        }
+        typeGroups[type].push(pdf);
+      }
+    });
+
+    // Get one random PDF from each type (max 6 types)
+    const types = Object.keys(typeGroups);
+    const randomPdfs = [];
+    
+    // Shuffle types to get random order
+    const shuffledTypes = types.sort(() => Math.random() - 0.5).slice(0, 6);
+    
+    shuffledTypes.forEach(type => {
+      const pdfsOfType = typeGroups[type];
+      const randomIndex = Math.floor(Math.random() * pdfsOfType.length);
+      randomPdfs.push(pdfsOfType[randomIndex]);
+    });
+
+    return randomPdfs;
+  };
+
+  // Fetch all PDFs from backend
+  const fetchAllPdfs = async () => {
     try {
       setLoading(true);
       setError("");
       const data = await api.fetchPdfs();
+      setPdfs(data);
       
-      // Filter to keep only one item per type (max 6)
-      const uniqueTypes = new Map();
-      data.forEach(pdf => {
-        const type = pdf.metadata?.type;
-        if (type && !uniqueTypes.has(type)) {
-          uniqueTypes.set(type, pdf);
-        }
-      });
-      
-      const filteredData = Array.from(uniqueTypes.values());
-      setPdfs(filteredData);
-      setAllPdfs(data); // Store all PDFs for later use
-      toast.success(`Loaded ${filteredData.length} featured PDFs!`);
+      // Show 6 random PDFs initially
+      const randomSix = getRandomSixPdfs(data);
+      setDisplayedPdfs(randomSix);
+      toast.success(`Loaded ${randomSix.length} featured PDFs!`);
     } catch (err) {
       console.error("Error fetching PDFs:", err);
       setError("Failed to load PDFs. Please check your connection.");
@@ -51,40 +73,37 @@ const Home = () => {
     }
   };
 
-  // Load all PDFs when search or filter is applied
-  const loadAllPdfs = () => {
-    if (!hasLoadedAll && allPdfs.length > 0) {
-      setPdfs(allPdfs);
-      setHasLoadedAll(true);
-      toast.success(`Loaded all ${allPdfs.length} PDFs!`);
-    }
-  };
-
   useEffect(() => {
-    fetchInitialPdfs();
+    fetchAllPdfs();
   }, []);
 
   // Check if user is searching or filtering
   const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
 
-  // Load all PDFs when filters are applied
+  // Update displayed PDFs based on filters
   useEffect(() => {
-    if (hasActiveFilters && !hasLoadedAll) {
-      loadAllPdfs();
+    if (hasActiveFilters) {
+      // Apply filters to all PDFs
+      const filtered = pdfs.filter(pdf => {
+        const matchesSearch = 
+          pdf.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          pdf.metadata?.subject?.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesSemester = !filters.semester || pdf.metadata?.semester === filters.semester;
+        const matchesType = !filters.type || pdf.metadata?.type === filters.type;
+        const matchesYear = !filters.year || pdf.metadata?.year === filters.year;
+
+        return matchesSearch && matchesSemester && matchesType && matchesYear;
+      });
+      setDisplayedPdfs(filtered);
+    } else {
+      // No filters: show 6 random PDFs
+      const randomSix = getRandomSixPdfs(pdfs);
+      setDisplayedPdfs(randomSix);
     }
-  }, [hasActiveFilters]);
+  }, [searchTerm, filters, pdfs]);
 
-  const filteredPdfs = pdfs.filter(pdf => {
-    const matchesSearch = 
-      pdf.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pdf.metadata?.subject?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesSemester = !filters.semester || pdf.metadata?.semester === filters.semester;
-    const matchesType = !filters.type || pdf.metadata?.type === filters.type;
-    const matchesYear = !filters.year || pdf.metadata?.year === filters.year;
-
-    return matchesSearch && matchesSemester && matchesType && matchesYear;
-  });
+  const filteredPdfs = displayedPdfs;
 
   const handleFilterChange = (filterName, value) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
@@ -142,12 +161,12 @@ const Home = () => {
 
         <ResultsInfo
           filteredCount={filteredPdfs.length}
-          totalCount={hasLoadedAll ? allPdfs.length : pdfs.length}
+          totalCount={pdfs.length}
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
         />
 
-        {error && <ErrorMessage message={error} onRetry={fetchInitialPdfs} />}
+        {error && <ErrorMessage message={error} onRetry={fetchAllPdfs} />}
 
         {!error && (
           filteredPdfs.length === 0 ? (
