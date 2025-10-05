@@ -22,13 +22,13 @@ const FiltersSection = ({ filters, onFilterChange, onClearFilters, yearOptions }
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+    <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
       <FilterSelect
         value={filters.semester}
         onChange={(value) => onFilterChange("semester", value)}
         options={semesterOptions}
         label="Semester"
-        defaultOption="All Semesters"
+        defaultOption="Tou Les Semesters"
       />
 
       <FilterSelect
@@ -36,15 +36,15 @@ const FiltersSection = ({ filters, onFilterChange, onClearFilters, yearOptions }
         onChange={(value) => onFilterChange("type", value)}
         options={typeOptions}
         label="Type"
-        defaultOption="All Types"
+        defaultOption="Tous Les Types"
       />
 
       <FilterSelect
         value={filters.year}
         onChange={(value) => onFilterChange("year", value)}
         options={yearOptions}
-        label="Year"
-        defaultOption="All Years"
+        label="Annees"
+        defaultOption="Tous Les Annees"
       />
 
       <div className="flex items-end">
@@ -59,7 +59,7 @@ const FiltersSection = ({ filters, onFilterChange, onClearFilters, yearOptions }
           "
         >
           <XCircle size={18} />
-          Clear Filters
+          Effacer les filters
         </button>
       </div>
     </div>

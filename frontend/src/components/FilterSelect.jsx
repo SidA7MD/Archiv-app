@@ -6,7 +6,7 @@ const FilterSelect = ({
   onChange,
   options,
   label,
-  defaultOption = "Select an option...",
+  defaultOption = "Selectionnez une option...",
 }) => {
   return (
     <div className="w-full max-w-xs mx-auto">
