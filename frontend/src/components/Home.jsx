@@ -11,6 +11,7 @@ import PdfCard from './PdfCard';
 
 const Home = () => {
   const [pdfs, setPdfs] = useState([]);
+  const [allPdfs, setAllPdfs] = useState([]); // Store all PDFs
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,14 +20,16 @@ const Home = () => {
     type: "",
     year: ""
   });
+  const [hasLoadedAll, setHasLoadedAll] = useState(false); // Track if all PDFs are loaded
 
-  const fetchPdfs = async () => {
+  // Fetch initial 6 PDFs (one per type)
+  const fetchInitialPdfs = async () => {
     try {
       setLoading(true);
       setError("");
       const data = await api.fetchPdfs();
       
-      // Filter to keep only one item per type
+      // Filter to keep only one item per type (max 6)
       const uniqueTypes = new Map();
       data.forEach(pdf => {
         const type = pdf.metadata?.type;
@@ -37,7 +40,8 @@ const Home = () => {
       
       const filteredData = Array.from(uniqueTypes.values());
       setPdfs(filteredData);
-      toast.success(`Loaded ${filteredData.length} PDFs (one per type)!`);
+      setAllPdfs(data); // Store all PDFs for later use
+      toast.success(`Loaded ${filteredData.length} featured PDFs!`);
     } catch (err) {
       console.error("Error fetching PDFs:", err);
       setError("Failed to load PDFs. Please check your connection.");
@@ -47,9 +51,28 @@ const Home = () => {
     }
   };
 
+  // Load all PDFs when search or filter is applied
+  const loadAllPdfs = () => {
+    if (!hasLoadedAll && allPdfs.length > 0) {
+      setPdfs(allPdfs);
+      setHasLoadedAll(true);
+      toast.success(`Loaded all ${allPdfs.length} PDFs!`);
+    }
+  };
+
   useEffect(() => {
-    fetchPdfs();
+    fetchInitialPdfs();
   }, []);
+
+  // Check if user is searching or filtering
+  const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
+
+  // Load all PDFs when filters are applied
+  useEffect(() => {
+    if (hasActiveFilters && !hasLoadedAll) {
+      loadAllPdfs();
+    }
+  }, [hasActiveFilters]);
 
   const filteredPdfs = pdfs.filter(pdf => {
     const matchesSearch = 
@@ -101,8 +124,6 @@ const Home = () => {
     new Set(pdfs.map(pdf => pdf.metadata?.year).filter(Boolean))
   ).sort().map(year => ({ value: year, label: year }));
 
-  const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
-
   if (loading) return <Loading />;
 
   return (
@@ -121,12 +142,12 @@ const Home = () => {
 
         <ResultsInfo
           filteredCount={filteredPdfs.length}
-          totalCount={pdfs.length}
+          totalCount={hasLoadedAll ? allPdfs.length : pdfs.length}
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
         />
 
-        {error && <ErrorMessage message={error} onRetry={fetchPdfs} />}
+        {error && <ErrorMessage message={error} onRetry={fetchInitialPdfs} />}
 
         {!error && (
           filteredPdfs.length === 0 ? (
