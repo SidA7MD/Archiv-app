@@ -3,15 +3,15 @@ import { FilterX } from "lucide-react";
 
 const NoResults = ({ onClearFilters, hasFilters }) => {
   return (
-    <div className="text-center py-16 px-6 bg-gray-50 rounded-2xl shadow-sm max-w-xl mx-auto mt-10">
-      <div className="text-6xl mb-4">📭</div>
+    <div className="max-w-xl px-6 py-16 mx-auto mt-10 text-center shadow-sm bg-gray-50 rounded-2xl">
+      <div className="mb-4 text-6xl">📭</div>
       
-      <h3 className="text-2xl font-semibold mb-2 text-gray-800">
-        No PDFs found
+      <h3 className="mb-2 text-2xl font-semibold text-gray-800">
+        Aucun PDF trouvé
       </h3>
       
-      <p className="text-gray-500 mb-6 text-base">
-        No documents match your search criteria.
+      <p className="mb-6 text-base text-gray-500">
+        Aucun document ne correspond à vos critères de recherche.
       </p>
 
       {hasFilters && (
@@ -25,7 +25,7 @@ const NoResults = ({ onClearFilters, hasFilters }) => {
           "
         >
           <FilterX size={18} />
-          Clear filters to see all PDFs
+          Réinitialiser les filtres pour voir tous les PDFs
         </button>
       )}
     </div>
