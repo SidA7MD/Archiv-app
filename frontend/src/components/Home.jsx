@@ -95,10 +95,10 @@ const Home = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-screen bg-base-200">
-      <div className="container px-4 py-10 mx-auto max-w-7xl">
+    <div className="min-h-screen bg-white">
+      <div className="container px-4 py-10 mx-auto max-w-full w-[95%]">
         {/* Controls */}
-        <div className="p-6 mb-8 space-y-6 rounded-lg shadow-lg bg-base-100">
+        <div className="p-6 mb-8 space-y-6 bg-white rounded-lg shadow-lg">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
           <FiltersSection
             filters={filters}
@@ -124,7 +124,7 @@ const Home = () => {
               hasFilters={hasActiveFilters}
             />
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {filteredPdfs.map((pdf) => (
                 <PdfCard
                   key={pdf._id}
