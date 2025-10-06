@@ -59,7 +59,7 @@ const FiltersSection = ({ filters, onFilterChange, onClearFilters, yearOptions }
           "
         >
           <XCircle size={18} />
-          Effacer les filters
+          Réinitialiser les filtres
         </button>
       </div>
     </div>

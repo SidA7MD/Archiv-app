@@ -21,7 +21,7 @@ const ResultsInfo = ({
           className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors outline-none hover:text-primary focus:outline-none focus:ring-0"
         >
           <XCircle size={16} />
-          Effacer les filters
+          Réinitialiser les filtres
         </button>
       )}
     </div>

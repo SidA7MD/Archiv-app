@@ -14,7 +14,7 @@ const Loading = () => {
       </motion.div>
 
       <p className="mt-4 text-gray-600 text-lg font-medium">
-        Loading PDFs...
+        Chargement des PDFs…
       </p>
     </div>
   );
