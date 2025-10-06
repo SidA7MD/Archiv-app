@@ -11,7 +11,7 @@ import PdfCard from './PdfCard';
 
 const Home = () => {
   const [pdfs, setPdfs] = useState([]);
-  const [displayedPdfs, setDisplayedPdfs] = useState([]); 
+  const [displayedPdfs, setDisplayedPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,11 +21,11 @@ const Home = () => {
     year: ""
   });
 
-  
+
   const getRandomSixPdfs = (allPdfs) => {
     const typeGroups = {};
-    
-    
+
+
     allPdfs.forEach(pdf => {
       const type = pdf.metadata?.type;
       if (type) {
@@ -36,13 +36,13 @@ const Home = () => {
       }
     });
 
-    
+
     const types = Object.keys(typeGroups);
     const randomPdfs = [];
-    
-    
+
+
     const shuffledTypes = types.sort(() => Math.random() - 0.5).slice(0, 6);
-    
+
     shuffledTypes.forEach(type => {
       const pdfsOfType = typeGroups[type];
       const randomIndex = Math.floor(Math.random() * pdfsOfType.length);
@@ -52,15 +52,15 @@ const Home = () => {
     return randomPdfs;
   };
 
-  
+
   const fetchAllPdfs = async () => {
     try {
       setLoading(true);
       setError("");
       const data = await api.fetchPdfs();
       setPdfs(data);
-      
-     
+
+
       const randomSix = getRandomSixPdfs(data);
       setDisplayedPdfs(randomSix);
       toast.success(`Loaded ${randomSix.length} featured PDFs!`);
@@ -77,18 +77,18 @@ const Home = () => {
     fetchAllPdfs();
   }, []);
 
-  
+
   const hasActiveFilters = searchTerm || filters.semester || filters.type || filters.year;
 
-  
+
   useEffect(() => {
     if (hasActiveFilters) {
-      
+
       const filtered = pdfs.filter(pdf => {
-        const matchesSearch = 
+        const matchesSearch =
           pdf.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           pdf.metadata?.subject?.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
         const matchesSemester = !filters.semester || pdf.metadata?.semester === filters.semester;
         const matchesType = !filters.type || pdf.metadata?.type === filters.type;
         const matchesYear = !filters.year || pdf.metadata?.year === filters.year;
@@ -97,7 +97,7 @@ const Home = () => {
       });
       setDisplayedPdfs(filtered);
     } else {
-      
+
       const randomSix = getRandomSixPdfs(pdfs);
       setDisplayedPdfs(randomSix);
     }
@@ -148,7 +148,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container px-4 py-10 mx-auto max-w-full w-[95%]">
-        
+
         <div className="p-6 mb-8 space-y-6 bg-white rounded-lg shadow-lg">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
           <FiltersSection
