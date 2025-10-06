@@ -17,9 +17,9 @@ const corsOptions = {
       "http://localhost:3000",
       "http://localhost:5173",
     ];
-    
+
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -48,7 +48,7 @@ app.use("/api/pdfs", pdfRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
