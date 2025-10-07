@@ -114,4 +114,56 @@ router.delete("/files/:id", async (req, res) => {
   }
 });
 
+
+router.put("/files/:id", async (req, res) => {
+  try {
+    if (!bucket) {
+      return res.status(500).json({ message: "Database not connected" });
+    }
+
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+    const { newFilename, semester, type, subject, year } = req.body;
+
+    // Check file existence
+    const files = await bucket.find({ _id: fileId }).toArray();
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    // ✅ Rename file if a new filename is provided
+    if (newFilename && newFilename.trim() !== "") {
+      await bucket.rename(fileId, newFilename);
+    }
+
+    // ✅ Update metadata if any new metadata fields are provided
+    const metadataUpdates = {};
+    if (semester) metadataUpdates["metadata.semester"] = semester;
+    if (type) metadataUpdates["metadata.type"] = type;
+    if (subject) metadataUpdates["metadata.subject"] = subject;
+    if (year) metadataUpdates["metadata.year"] = year;
+
+    if (Object.keys(metadataUpdates).length > 0) {
+      await bucket.s.db
+        .collection(`${bucket.s.options.bucketName}.files`)
+        .updateOne(
+          { _id: fileId },
+          { $set: metadataUpdates }
+        );
+    }
+
+    res.json({
+      message: "File updated successfully",
+      fileId,
+      updatedFields: {
+        ...(newFilename ? { filename: newFilename } : {}),
+        ...metadataUpdates,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error updating file:", error);
+    res.status(500).json({ message: "Error updating file", error: error.message });
+  }
+});
+
 export default router;
