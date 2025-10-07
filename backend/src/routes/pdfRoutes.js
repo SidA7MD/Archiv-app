@@ -92,4 +92,26 @@ router.get("/files", async (req, res) => {
   }
 });
 
+
+router.delete("/files/:id", async (req, res) => {
+  try {
+    if (!bucket) {
+      return res.status(500).json({ message: "Database not connected" });
+    }
+
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+
+    const files = await bucket.find({ _id: fileId }).toArray();
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    await bucket.delete(fileId);
+    res.json({ message: "File deleted successfully", fileId });
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    res.status(500).json({ message: "Error deleting file", error: error.message });
+  }
+});
+
 export default router;
